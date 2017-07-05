@@ -60,7 +60,8 @@
 
 	// uncomment so that webpack can bundle styles
 	// import styles from './scss/application.scss';
-	console.log('this is a test!!!!!');
+
+
 	(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.getElementById('container'));
 
 /***/ }),
@@ -22220,6 +22221,11 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var incomingurl = window.location.href;
+	var incomingurlIndex = incomingurl.indexOf('?');
+	var urlParams = incomingurl.slice(incomingurlIndex + 1);
+	console.log(urlParams);
+
 	function keyPress(e) {
 	  var keyCode = e.keyCode || e.which;
 	  if (keyCode == '13') {
@@ -22231,15 +22237,22 @@
 	  }
 	}
 
+	function deleteItem(i) {
+	  var newState = this.state.list.slice();
+	  newState.splice(i, 1);
+	  this.setState({ list: newState });
+	}
+
 	var App = function (_Component) {
 	  _inherits(App, _Component);
 
 	  function App(props) {
 	    _classCallCheck(this, App);
 
-	    //this.handleClick = this.handleClick.bind(this);
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
+	    _this.deleteItem = deleteItem.bind(_this);
+	    //this.handleClick = this.handleClick.bind(this);
 	    _this.state = {
 	      list: ['one', 'two', 'three']
 	    };
@@ -22268,12 +22281,16 @@
 	  _createClass(App, [{
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
 
 	      var listElements = this.state.list.map(function (content, i) {
 	        return _react2.default.createElement(
 	          'li',
 	          { key: i, className: 'listItem' },
-	          content
+	          content,
+	          _react2.default.createElement('button', { className: 'destroy', id: 'destroy', onClick: function onClick() {
+	              return _this2.deleteItem(i);
+	            } })
 	        );
 	      });
 

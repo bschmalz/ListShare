@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 
+const incomingurl = window.location.href;
+const incomingurlIndex = incomingurl.indexOf('?'); 
+const urlParams = incomingurl.slice(incomingurlIndex + 1)
+console.log(urlParams);
 
 function keyPress(e){
     const keyCode = e.keyCode || e.which;
@@ -12,10 +16,17 @@ function keyPress(e){
     }
 }
 
+function deleteItem(i) {
+  let newState = this.state.list.slice();
+  newState.splice(i, 1);
+  this.setState({list: newState});
+}
+
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.deleteItem = deleteItem.bind(this);
     //this.handleClick = this.handleClick.bind(this);
     this.state = {
       list: ['one', 'two', 'three']
@@ -44,8 +55,11 @@ class App extends Component {
   render() {
 
     const listElements = this.state.list.map((content, i) => (
-      <li key = {i} className="listItem">{content}</li>
+      <li key = {i} className="listItem">{content}<button className="destroy" id="destroy" onClick={() => this.deleteItem(i)}></button></li>
     ));
+
+
+
 
   return (
       <div>

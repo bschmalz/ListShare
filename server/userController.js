@@ -35,6 +35,7 @@ userController.createUser = (req, res, next) => {
     	newUser.save((err, newItem) => {
     	if (err) return console.log(err);
     	res.locals._id = newItem._id;
+      res.locals.username = newItem.username;
       console.log('user added');
       next();
       });
@@ -100,6 +101,7 @@ userController.verifyUser = (req, res, next) => {
       // User Found, check Password
       if (newUser.comparePassword(result.password)) {
         res.locals._id = result._id;
+        res.locals.username = result.username;
         next();
       } else {
         return res.redirect('/signup');

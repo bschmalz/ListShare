@@ -25,7 +25,7 @@ app.get('/find', userController.test)
 
 app.post('/signup', userController.createUser, (req, res, next) => {
 	console.log('post singup');
-	res.end();
+	res.redirect('/showList?' + res.locals.username);
 }); 
 
 app.get('/login', (req, res, next) => {
@@ -33,10 +33,22 @@ app.get('/login', (req, res, next) => {
 	res.sendFile(__dirname+'/html/login.html');
 }); 
 
+app.post('/login', userController.verifyUser, (req, res, next) => {
+	console.log('user verified');
+	res.redirect('/showList?' + res.locals.username);
+})
+
 app.get('/', (req, res, next) => {
 	console.log('got index');
 	res.sendFile(__dirname+'/html/index.html');
 }); 
+
+app.get('/showList', (req, res, next) => {
+	console.log('show List');
+	res.sendFile(__dirname+'/html/index.html');
+}); 
+
+
 // app.get('/listView', (req, res) => {
 //   console.log('list view');
 //   express.static(__dirname +'./../'); 
