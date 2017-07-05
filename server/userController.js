@@ -17,13 +17,31 @@ userController.getAllUsers = (next) => {
 * @param req - http.IncomingRequest
 * @param res - http.ServerResponse
 */
-
-userController.test = (req, res, next) => {
-  User.find({}, (err, results) => {
-    console.log(results); 
+userController.showAll = (req, res, next) => {
+  User.find({}, (err, result) => {
+    console.log(result);
     res.end();
   });
-}
+};
+
+userController.editData = (req, res, next) => {
+  console.log('req body', req.body);
+  User.update({username: req.body.name}, {$set: {lists: req.body.list}}, () => {
+    console.log('user updated!');
+  }); 
+
+
+  res.end();
+};
+
+userController.findList = (req, res, next) => {
+    const name = req.url.slice(9);
+    console.log('name is', name)
+    User.findOne({username: name}, (err, result) => {
+      if (result) res.json(result.lists);
+      res.end();
+    });
+  };
 
 
 userController.createUser = (req, res, next) => {

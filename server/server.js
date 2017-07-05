@@ -20,8 +20,11 @@ app.use('/build', express.static(__dirname +'./../build'));
 app.get('/signup', (req, res, next) => {
 	res.sendFile(__dirname+'/html/signup.html');
 }); 
+app.get('/showUsers', userController.showAll);
 
-app.get('/find', userController.test)
+app.get('/getData', userController.findList);
+
+app.post('/editData', userController.editData);
 
 app.post('/signup', userController.createUser, (req, res, next) => {
 	console.log('post singup');

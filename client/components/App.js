@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
+import $ from 'jquery'; 
 
-const incomingurl = window.location.href;
-const incomingurlIndex = incomingurl.indexOf('?'); 
-const urlParams = incomingurl.slice(incomingurlIndex + 1)
-console.log(urlParams);
+    const incomingurl = window.location.href;
+    const incomingurlIndex = incomingurl.indexOf('?'); 
+    const urlParams = incomingurl.slice(incomingurlIndex + 1)
+
+
+
+
+
+
+
+
 
 function keyPress(e){
     const keyCode = e.keyCode || e.which;
@@ -13,6 +21,9 @@ function keyPress(e){
       newState.push(input.value);
       this.setState({list: newState});
       input.value = '';
+      $.post('http://localhost:3000/editData?' + urlParams, {name: urlParams, list: newState}, data => {
+        console.log('got back add post');
+      });
     }
 }
 
@@ -20,6 +31,9 @@ function deleteItem(i) {
   let newState = this.state.list.slice();
   newState.splice(i, 1);
   this.setState({list: newState});
+  $.post('http://localhost:3000/editData?' + urlParams, {name: urlParams, list: newState}, data => {
+    console.log('got back delete post');
+  });
 }
 
 
@@ -27,30 +41,21 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.deleteItem = deleteItem.bind(this);
+    this.getData = this.getData.bind(this);
     //this.handleClick = this.handleClick.bind(this);
     this.state = {
-      list: ['one', 'two', 'three']
+      list: []
     };
+    this.getData();
   }
 
-  // handleClick(row, square) {
-  //   let { turn, winner } = this.state;
-  //   const { rows } = this.state;
-  //   const squareInQuestion = rows[row][square];
+  getData() {
+    $.getJSON('http://localhost:3000/getData?' + urlParams, data => {
+        console.log('setting state');
+        this.setState({list: data});
+    });
+  }
 
-  //   if (this.state.winner) return;
-  //   if (squareInQuestion) return;
-
-  //   rows[row][square] = turn;
-  //   turn = turn === 'X' ? 'O' : 'X';
-  //   winner = checkWin(rows);
-
-  //   this.setState({
-  //     rows,
-  //     turn,
-  //     winner,
-  //   });
-  // }
 
   render() {
 
