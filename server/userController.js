@@ -66,10 +66,17 @@ userController.createUser = (req, res, next) => {
 };
 
 userController.verifyCookie = (req, res, next) => {
-  console.log('cookies are', req.cookies.ssid);
+
+  const incomingurlIndex = req.url.indexOf('?'); 
+    const urlParams = req.url.slice(incomingurlIndex + 1)
   if (req.cookies.ssid) {
-    console.log('this should hit');
-    next();
+    User.findOne({username: urlParams, _id: req.cookies.ssid}, (err, result) => {
+      if (result) {
+        next();
+      } else {
+        res.redirect('/signup');
+      }
+    });
   } else {
     console.log('redirect');
     res.redirect('/signup');
