@@ -54,6 +54,7 @@ userController.createUser = (req, res, next) => {
     	if (err) return console.log(err);
     	res.locals._id = newItem._id;
       res.locals.username = newItem.username;
+      res.cookie('ssid', newItem._id, {maxAge: 30000, httpOnly: true});
       console.log('user added');
       next();
       });
@@ -62,6 +63,17 @@ userController.createUser = (req, res, next) => {
     	return res.redirect('/signup');
     }
   });
+};
+
+userController.verifyCookie = (req, res, next) => {
+  console.log('cookies are', req.cookies.ssid);
+  if (req.cookies.ssid) {
+    console.log('this should hit');
+    next();
+  } else {
+    console.log('redirect');
+    res.redirect('/signup');
+}
 };
 
 userController.verifyOAuth = (req, res, next) => {
@@ -120,6 +132,7 @@ userController.verifyUser = (req, res, next) => {
       if (newUser.comparePassword(result.password)) {
         res.locals._id = result._id;
         res.locals.username = result.username;
+        res.cookie('ssid', result._id, {maxAge: 30000, httpOnly: true});
         next();
       } else {
         return res.redirect('/signup');

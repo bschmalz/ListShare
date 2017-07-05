@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const userController = require('./userController.js');
 
 mongoose.connect('mongodb://localhost/solo-Project');
@@ -11,8 +12,7 @@ mongoose.connection.once('open', () => {
   console.log('Connected to Database yo');
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-console.log('dirname is', __dirname);
+app.use(cookieParser(), bodyParser.urlencoded({ extended: true }));
 app.use('/client', express.static(__dirname +'./../client')); 
 app.use('/build', express.static(__dirname +'./../build'));
 
@@ -46,8 +46,7 @@ app.get('/', (req, res, next) => {
 	res.sendFile(__dirname+'/html/index.html');
 }); 
 
-app.get('/showList', (req, res, next) => {
-	console.log('show List');
+app.get('/showList', userController.verifyCookie, (req, res, next) => {
 	res.sendFile(__dirname+'/html/index.html');
 }); 
 
