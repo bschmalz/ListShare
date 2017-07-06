@@ -8,9 +8,21 @@ body {
 #logout {
   text-decoration: none; 
   color: black;
-  margin: 20px;
-  padding: 20px;
   line-height: 2;
+}
+
+#shoppify {
+  margin-top: 80px;
+  margin-bottom: 30px;
+  padding-bottom: 0; 
+  color: white;
+}
+
+#signup {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
+  color: white;
 }
 
 #container {
