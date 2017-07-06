@@ -22262,15 +22262,34 @@
 
 	    _this.deleteItem = deleteItem.bind(_this);
 	    _this.getData = _this.getData.bind(_this);
+	    _this.editData = _this.editData.bind(_this);
 	    //this.handleClick = this.handleClick.bind(this);
 	    _this.state = {
 	      list: []
 	    };
+	    _this.editing = -1;
 	    _this.getData();
 	    return _this;
 	  }
 
 	  _createClass(App, [{
+	    key: 'editData',
+	    value: function editData(e, i) {
+	      var keyCode = e.keyCode || e.which;
+	      if (keyCode == '13') {
+
+	        var item = document.getElementById('editItem');
+	        var val = item.value;
+	        var newList = this.state.list.slice(0);
+	        newList[i] = val;
+	        console.log('updated state is', newList);
+	        this.setState({ list: newList, editing: -1 });
+	        _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newList }, function (data) {
+	          console.log('got back edit post');
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'getData',
 	    value: function getData() {
 	      var _this2 = this;
@@ -22286,14 +22305,24 @@
 	      var _this3 = this;
 
 	      var listElements = this.state.list.map(function (content, i) {
-	        return _react2.default.createElement(
-	          'li',
-	          { key: i, className: 'listItem' },
-	          content,
-	          _react2.default.createElement('button', { className: 'destroy', id: 'destroy', onClick: function onClick() {
-	              return _this3.deleteItem(i);
-	            } })
-	        );
+	        if (i === _this3.state.editing) {
+	          return _react2.default.createElement('input', { key: i, className: 'listInput', id: 'editItem', defaultValue: content, onKeyPress: function onKeyPress(e) {
+	              return _this3.editData(e, i);
+	            }, onChange: function onChange() {
+	              return console.log('change');
+	            }, autoFocus: true });
+	        } else {
+	          return _react2.default.createElement(
+	            'li',
+	            { key: i, className: 'listItem', onDoubleClick: function onDoubleClick() {
+	                return _this3.setState({ editing: i });
+	              } },
+	            content,
+	            _react2.default.createElement('button', { className: 'destroy', id: 'destroy', onClick: function onClick() {
+	                return _this3.deleteItem(i);
+	              } })
+	          );
+	        }
 	      });
 
 	      return _react2.default.createElement(
@@ -22304,7 +22333,7 @@
 	          { id: 'shopList' },
 	          'Shopping List'
 	        ),
-	        _react2.default.createElement('input', { type: 'text', placeholder: 'Add an item', id: 'listInput', onKeyPress: keyPress.bind(this) }),
+	        _react2.default.createElement('input', { type: 'text', placeholder: 'Add an item', id: 'listInput', className: 'listInput', onKeyPress: keyPress.bind(this) }),
 	        _react2.default.createElement(
 	          'ul',
 	          { id: 'list' },

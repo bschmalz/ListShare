@@ -37,16 +37,36 @@ function deleteItem(i) {
 }
 
 
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.deleteItem = deleteItem.bind(this);
     this.getData = this.getData.bind(this);
+    this.editData = this.editData.bind(this);
     //this.handleClick = this.handleClick.bind(this);
     this.state = {
       list: []
     };
+    this.editing = -1; 
     this.getData();
+  }
+
+  editData(e, i) {
+    const keyCode = e.keyCode || e.which;
+    if (keyCode == '13'){
+
+      const item = document.getElementById('editItem'); 
+      const val = item.value; 
+      let newList = this.state.list.slice(0);
+      newList[i] = val; 
+      console.log('updated state is', newList);
+      this.setState({list: newList, editing: -1});
+      $.post('http://localhost:3000/editData?' + urlParams, {name: urlParams, list: newList}, data => {
+        console.log('got back edit post');
+      });
+    }
+
   }
 
   getData() {
@@ -59,9 +79,14 @@ class App extends Component {
 
   render() {
 
-    const listElements = this.state.list.map((content, i) => (
-      <li key = {i} className="listItem">{content}<button className="destroy" id="destroy" onClick={() => this.deleteItem(i)}></button></li>
-    ));
+    const listElements = this.state.list.map((content, i) => {
+      if (i === this.state.editing) {
+        return <input key = {i} className="listInput" id="editItem" defaultValue={content} onKeyPress={(e) => this.editData(e,i)} onChange={() => console.log('change')} autoFocus></input>
+      } else {
+        return <li key = {i} className="listItem" onDoubleClick={() => this.setState({editing: i})}>{content}<button className="destroy" id="destroy" onClick={() => this.deleteItem(i)}></button></li>;
+
+      }
+    });
 
 
 
@@ -69,7 +94,7 @@ class App extends Component {
   return (
       <div>
       <h1 id="shopList">Shopping List</h1>
-      <input type="text" placeholder="Add an item" id="listInput" onKeyPress={keyPress.bind(this)}/>
+      <input type="text" placeholder="Add an item" id="listInput" className="listInput" onKeyPress={keyPress.bind(this)}/>
       <ul id="list">
         {listElements}
       </ul>
