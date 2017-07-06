@@ -22301,7 +22301,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'h1',
-	          null,
+	          { id: 'shopList' },
 	          'Shopping List'
 	        ),
 	        _react2.default.createElement('input', { type: 'text', placeholder: 'Add an item', id: 'listInput', onKeyPress: keyPress.bind(this) }),
@@ -22309,6 +22309,11 @@
 	          'ul',
 	          { id: 'list' },
 	          listElements
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: 'http://localhost:3000/logout', id: 'logout' },
+	          'Log Out'
 	        )
 	      );
 	    }

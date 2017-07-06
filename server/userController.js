@@ -65,6 +65,20 @@ userController.createUser = (req, res, next) => {
   });
 };
 
+userController.checkCookie = (req, res, next) => {
+  if (req.cookies.ssid) {
+    User.findOne({_id: req.cookies.ssid}, (err, result) => {
+      if (result) {
+        res.redirect('/showList?' + result.username);
+      } else {
+        next();
+      }
+    });
+  } else {
+    next();
+  }
+};
+
 userController.verifyCookie = (req, res, next) => {
 
   const incomingurlIndex = req.url.indexOf('?'); 
@@ -112,6 +126,7 @@ userController.verifyOAuth = (req, res, next) => {
         if (err) return res.render('./../client/signup', {error: err});
         if (result) {
           res.locals._id = result._id;
+          res.cookie('ssid', result._id, {maxAge: 30000, httpOnly: true});
           next();
         }
         if (!result) {
@@ -120,6 +135,7 @@ userController.verifyOAuth = (req, res, next) => {
           const newUser = new User(contents);
           newUser.save((err, newresult) => {
             res.locals._id = newresult._id;
+            res.cookie('ssid', result._id, {maxAge: 30000, httpOnly: true});
             next();
           });
         }  

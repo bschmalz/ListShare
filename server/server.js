@@ -17,7 +17,7 @@ app.use('/client', express.static(__dirname +'./../client'));
 app.use('/build', express.static(__dirname +'./../build'));
 
 
-app.get('/signup', (req, res, next) => {
+app.get('/signup', userController.checkCookie, (req, res, next) => {
 	res.sendFile(__dirname+'/html/signup.html');
 }); 
 app.get('/showUsers', userController.showAll);
@@ -31,7 +31,7 @@ app.post('/signup', userController.createUser, (req, res, next) => {
 	res.redirect('/showList?' + res.locals.username);
 }); 
 
-app.get('/login', (req, res, next) => {
+app.get('/login', userController.checkCookie, (req, res, next) => {
 	console.log('got login');
 	res.sendFile(__dirname+'/html/login.html');
 }); 
@@ -41,14 +41,22 @@ app.post('/login', userController.verifyUser, (req, res, next) => {
 	res.redirect('/showList?' + res.locals.username);
 })
 
-app.get('/', (req, res, next) => {
+app.get('/', userController.checkCookie, (req, res, next) => {
 	console.log('got index');
-	res.sendFile(__dirname+'/html/index.html');
+	res.redirect('/signup');
 }); 
 
 app.get('/showList', userController.verifyCookie, (req, res, next) => {
 	res.sendFile(__dirname+'/html/index.html');
 }); 
+
+app.get('/logout', (req, res, next) => {
+	res.clearCookie('ssid');
+	res.redirect('/signup');
+});
+
+app.get('/callback', userController.verifyOAuth,
+ (req, res) => res.redirect('/showList'));
 
 
 // app.get('/listView', (req, res) => {

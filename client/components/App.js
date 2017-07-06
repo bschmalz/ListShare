@@ -68,11 +68,12 @@ class App extends Component {
 
   return (
       <div>
-      <h1>Shopping List</h1>
+      <h1 id="shopList">Shopping List</h1>
       <input type="text" placeholder="Add an item" id="listInput" onKeyPress={keyPress.bind(this)}/>
       <ul id="list">
         {listElements}
-      </ul>  
+      </ul>
+      <a href="http://localhost:3000/logout" id="logout">Log Out</a>  
       </div>
     );
   }

@@ -1,11 +1,20 @@
 body {
   background-color: black; 
   text-align: center; 
-  color: rgb(249, 232, 255);
+  color: black;
+  font-family: Helvetica; 
+}
+
+#logout {
+  text-decoration: none; 
+  color: black;
+  margin: 20px;
+  padding: 20px;
+  line-height: 2;
 }
 
 #container {
-  background-color: rgb(0, 72, 255);
+  background-color: rgb(229, 229, 229);
   width: 700px; 
   text-align: center; 
   margin: auto;
@@ -13,8 +22,11 @@ body {
   border-radius: 10px; 
 }
 
+#shopList {
+  padding-top: 20px;
+}
+
 #list {
-  border: 1px solid green;
   text-align: center; 
   margin: 0;
   padding: 0;
@@ -22,16 +34,17 @@ body {
 
 .listItem {
   list-style: none;
-  border: 1px solid red;
+  border-top: 1px solid rgb(229, 229, 229);
   font-size: 20px;
   margin: auto; 
+  padding-left: 20px;
   background-color: white;
   color: black;
   line-height: 1.3; 
 }
 
 #listInput {
-  border: 1px solid red;
+  border: none;
   font-size: 18px;
   width: 100%;
   margin: auto; 
@@ -62,4 +75,55 @@ body {
 
 .destroy:hover:after {
   color: #4d4d4d;
+}
+
+#submitbutton {
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+#signup {
+  margin-top: 35px;
+}
+
+#signupPage {
+  font-family: Helvetica; 
+  margin-top: 35px;
+  text-align: center; 
+}
+
+.textinput {
+  display: block;
+  float: center;
+  margin: 3 auto;
+  font-size: 20px;
+  width: 400px;
+}
+
+#github {
+  width: 300px;
+  height: 60px;
+  background-color: white; 
+  border-radius: 10px;
+  display: inline-block;
+}
+
+#oauth {
+  font-size: 18px;
+  color: black;
+}
+
+#gitimg {
+  height: 40px;
+  display: inline;
+  float: left;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+#switchpage {
+  color: white;
+  margin-top: 10px;
+  text-decoration: none; 
+  display: block;
 }

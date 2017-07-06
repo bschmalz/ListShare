@@ -1,17 +1,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Unit-10-Authentication</title>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="client/stylesheets/styles.css">
 </head>
-<body>
-  Signup
+<body id="signupPage">
+  <h1 id="shoppify">Shoppify</h1>
+  <h4 id="signup">Sign Up</h4>
   <form method='POST' action='/signup'>
-    <input name="username" type="text" placeholder="username"></input>
-    <input name="password" type="password"></input>
-    <input type='submit' value='Create User'></button>
+    <input class="textinput" name="username" type="text" placeholder="username"></input>
+    <input class="textinput" name="password" type="password" placeholder="password"></input>
+    <input type='submit' value='Log In' id="submitbutton"></button>
   </form>
   <a href="https://github.com/login/oauth/authorize?client_id=186c9aa8e26e59d2affb&redirect_uri=http://localhost:3000/callback">
-  oAuth</a>
+  <div id='github'><img id="gitimg" src="client/stylesheets/github-mark.png"><h3 id="oauth">Sign in with Github</h3></div></a>
+  <a href='/login' id="switchpage">Go to Log In Page</a>
  
   
 </body>
