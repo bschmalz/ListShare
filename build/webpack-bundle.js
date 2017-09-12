@@ -22217,6 +22217,10 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
+	var _ListItems = __webpack_require__(186);
+
+	var _ListItems2 = _interopRequireDefault(_ListItems);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22225,32 +22229,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var incomingurl = window.location.href;
-	var incomingurlIndex = incomingurl.indexOf('?');
-	var urlParams = incomingurl.slice(incomingurlIndex + 1);
-
-	function keyPress(e) {
-	  var keyCode = e.keyCode || e.which;
-	  if (keyCode == '13') {
-	    var newState = this.state.list.slice();
-	    var input = document.getElementById("listInput");
-	    newState.push(input.value);
-	    this.setState({ list: newState });
-	    input.value = '';
-	    _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newState }, function (data) {
-	      console.log('got back add post');
-	    });
-	  }
-	}
-
-	function deleteItem(i) {
-	  var newState = this.state.list.slice();
-	  newState.splice(i, 1);
-	  this.setState({ list: newState });
-	  _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newState }, function (data) {
-	    console.log('got back delete post');
-	  });
-	}
+	// Grabs the URL parameters to get the username
+	var urlParams = window.location.href.slice(window.location.href.indexOf('?') + 1);
 
 	var App = function (_Component) {
 	  _inherits(App, _Component);
@@ -22260,71 +22240,95 @@
 
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-	    _this.deleteItem = deleteItem.bind(_this);
+	    _this.deleteItem = _this.deleteItem.bind(_this);
 	    _this.getData = _this.getData.bind(_this);
 	    _this.editData = _this.editData.bind(_this);
-	    //this.handleClick = this.handleClick.bind(this);
+	    _this.keyPress = _this.keyPress.bind(_this);
+	    _this.dblClick = _this.dblClick.bind(_this);
 	    _this.state = {
-	      list: []
+	      list: [],
+	      editing: -1
 	    };
-	    _this.editing = -1;
-	    _this.getData();
 	    return _this;
 	  }
 
+	  // Initial data grab on load
+
+
 	  _createClass(App, [{
-	    key: 'editData',
-	    value: function editData(e, i) {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getData();
+	    }
+
+	    // Deletes an item from the list and removes it from database
+
+	  }, {
+	    key: 'deleteItem',
+	    value: function deleteItem(index) {
+	      var newState = this.state.list.slice();
+	      newState.splice(index, 1);
+	      this.setState({ list: newState });
+	      _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newState }, function (data) {});
+	    }
+
+	    // This checks keypresses on the input and handles anything when Enter is pressed
+
+	  }, {
+	    key: 'keyPress',
+	    value: function keyPress(e) {
 	      var keyCode = e.keyCode || e.which;
 	      if (keyCode == '13') {
-
-	        var item = document.getElementById('editItem');
-	        var val = item.value;
-	        var newList = this.state.list.slice(0);
-	        newList[i] = val;
-	        console.log('updated state is', newList);
-	        this.setState({ list: newList, editing: -1 });
-	        _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newList }, function (data) {
-	          console.log('got back edit post');
-	        });
+	        var newState = this.state.list.slice();
+	        var input = document.getElementById("listInput");
+	        if (input.value === '') return;
+	        newState.push(input.value);
+	        this.setState({ list: newState });
+	        input.value = '';
+	        _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newState }, function (data) {});
 	      }
 	    }
+
+	    // Similar function as above but this one is specifically for editing items so it has some unique functionality
+	    // These two functions could be coupled together if needed
+
+	  }, {
+	    key: 'editData',
+	    value: function editData(e, index) {
+	      var keyCode = e.keyCode || e.which;
+	      if (keyCode == '13') {
+	        var item = document.getElementById('editItem');
+	        var val = item.value;
+	        if (val === '') return;
+	        var newList = this.state.list.slice();
+	        newList[index] = val;
+	        this.setState({ list: newList, editing: -1 });
+	        _jquery2.default.post('http://localhost:3000/editData?' + urlParams, { name: urlParams, list: newList }, function (data) {});
+	      }
+	    }
+
+	    // Sets a list item to be editable on double click
+
+	  }, {
+	    key: 'dblClick',
+	    value: function dblClick(i) {
+	      this.setState({ editing: i });
+	    }
+
+	    // Gets data from the server/db
+
 	  }, {
 	    key: 'getData',
 	    value: function getData() {
 	      var _this2 = this;
 
 	      _jquery2.default.getJSON('http://localhost:3000/getData?' + urlParams, function (data) {
-	        console.log('setting state');
 	        _this2.setState({ list: data });
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
-
-	      var listElements = this.state.list.map(function (content, i) {
-	        if (i === _this3.state.editing) {
-	          return _react2.default.createElement('input', { key: i, className: 'listInput', id: 'editItem', defaultValue: content, onKeyPress: function onKeyPress(e) {
-	              return _this3.editData(e, i);
-	            }, onChange: function onChange() {
-	              return console.log('change');
-	            }, autoFocus: true });
-	        } else {
-	          return _react2.default.createElement(
-	            'li',
-	            { key: i, className: 'listItem', onDoubleClick: function onDoubleClick() {
-	                return _this3.setState({ editing: i });
-	              } },
-	            content,
-	            _react2.default.createElement('button', { className: 'destroy', id: 'destroy', onClick: function onClick() {
-	                return _this3.deleteItem(i);
-	              } })
-	          );
-	        }
-	      });
-
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -22333,12 +22337,8 @@
 	          { id: 'shopList' },
 	          'Shopping List'
 	        ),
-	        _react2.default.createElement('input', { type: 'text', placeholder: 'Add an item', id: 'listInput', className: 'listInput', onKeyPress: keyPress.bind(this) }),
-	        _react2.default.createElement(
-	          'ul',
-	          { id: 'list' },
-	          listElements
-	        ),
+	        _react2.default.createElement('input', { type: 'text', placeholder: 'Add an item', id: 'listInput', className: 'listInput', onKeyPress: this.keyPress.bind(this) }),
+	        _react2.default.createElement(_ListItems2.default, { editing: this.state.editing, list: this.state.list, 'delete': this.deleteItem, edit: this.editData, dblClick: this.dblClick }),
 	        _react2.default.createElement(
 	          'a',
 	          { href: 'http://localhost:3000/logout', id: 'logout' },
@@ -32172,6 +32172,64 @@
 	return jQuery;
 	}));
 
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ListItems = function ListItems(props) {
+
+	  var listElements = props.list.map(function (content, i) {
+	    if (i === props.editing) {
+	      return _react2.default.createElement("input", { key: i, className: "listInput", id: "editItem", defaultValue: content, onKeyPress: function onKeyPress(e) {
+	          return props.edit(e, i);
+	        }, autoFocus: true });
+	    } else {
+	      return _react2.default.createElement(
+	        "li",
+	        { key: i, className: "listItem", onDoubleClick: function onDoubleClick() {
+	            return props.dblClick(i);
+	          } },
+	        content,
+	        _react2.default.createElement("button", { className: "destroy", id: "destroy", onClick: function onClick() {
+	            return props.delete(i);
+	          } })
+	      );
+	    }
+	  });
+
+	  return _react2.default.createElement(
+	    "div",
+	    null,
+	    _react2.default.createElement(
+	      "ul",
+	      { id: "list" },
+	      listElements
+	    )
+	  );
+	};
+
+	ListItems.propTypes = {
+	  list: _react.PropTypes.array.isRequired,
+	  edit: _react.PropTypes.func.isRequired,
+	  dblClick: _react.PropTypes.func.isRequired,
+	  delete: _react.PropTypes.func.isRequired,
+	  editing: _react.PropTypes.number.isRequired
+	};
+
+	exports.default = ListItems;
 
 /***/ })
 /******/ ]);

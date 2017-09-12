@@ -11,6 +11,7 @@ const userSchema = new Schema({
   lists: { type: Array, default: [] }
 });
 
+// Password encryption
 userSchema.pre('save', function(next) {
     let hash = bcrypt.hashSync(this.password, SALT_WORK_FACTOR);
     this.password = hash;

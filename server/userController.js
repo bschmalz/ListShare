@@ -7,33 +7,18 @@ const userController = {};
 const clientId = '186c9aa8e26e59d2affb';
 const clientSecret = 'a64d1475d185bfc362ea10f2c7576ea4ff0a5047';
 
-userController.getAllUsers = (next) => {
-  User.find({}, next);
-};
 
-/**
-* createUser - create a new User model and then save the user to the database.
-*
-* @param req - http.IncomingRequest
-* @param res - http.ServerResponse
-*/
-userController.showAll = (req, res, next) => {
-  User.find({}, (err, result) => {
-    console.log(result);
-    res.end();
-  });
-};
 
+// Edits the data for a specific users list
 userController.editData = (req, res, next) => {
   console.log('req body', req.body);
   User.update({username: req.body.name}, {$set: {lists: req.body.list}}, () => {
-    console.log('user updated!');
+    console.log('user updated');
   }); 
-
-
   res.end();
 };
 
+// Finds the appropriate list for the logged in user
 userController.findList = (req, res, next) => {
     const name = req.url.slice(9);
     console.log('name is', name)
@@ -44,6 +29,7 @@ userController.findList = (req, res, next) => {
   };
 
 
+// Creates a user and adds the users db info to the response object and also adds a session cookie to the user
 userController.createUser = (req, res, next) => {
   const newUser = new User(req.body);
   console.log('req body is ', req.body);
@@ -65,6 +51,7 @@ userController.createUser = (req, res, next) => {
   });
 };
 
+// Checks to see if user has a valid session cookie, if so they can go straight to their list
 userController.checkCookie = (req, res, next) => {
   if (req.cookies.ssid) {
     User.findOne({_id: req.cookies.ssid}, (err, result) => {
@@ -79,8 +66,8 @@ userController.checkCookie = (req, res, next) => {
   }
 };
 
+// Double checks users logging in that their cookie matches the url that they are requesting
 userController.verifyCookie = (req, res, next) => {
-
   const incomingurlIndex = req.url.indexOf('?'); 
     const urlParams = req.url.slice(incomingurlIndex + 1)
   if (req.cookies.ssid) {
@@ -94,9 +81,10 @@ userController.verifyCookie = (req, res, next) => {
   } else {
     console.log('redirect');
     res.redirect('/signup');
-}
+  }
 };
 
+// OAuth functionality, this should be split into multiple functions in a refactor
 userController.verifyOAuth = (req, res, next) => {
   const obj = {
     grant_type: 'authorization_code', 
@@ -145,6 +133,7 @@ userController.verifyOAuth = (req, res, next) => {
 }
 
 
+// Verifies that the user is logging in with valid credentials
 userController.verifyUser = (req, res, next) => {
   const newUser = new User(req.body);
   // if (!newUser.username || !newUser.password) return res.redirect('/signup');
@@ -163,6 +152,14 @@ userController.verifyUser = (req, res, next) => {
     } else {
     	return res.redirect('/signup');
     }
+  });
+};
+
+// Logs out all users, for debugging purposes only
+userController.showAll = (req, res, next) => {
+  User.find({}, (err, result) => {
+    console.log(result);
+    res.end();
   });
 };
 
