@@ -1,14 +1,14 @@
 {
-  "name": "",
+  "name": "ListShare",
   "version": "1.0.0",
-  "description": "",
+  "description": "A full stack app for storing user shopping lists",
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
     "webpack": "./node_modules/.bin/webpack -w",
     "gulp": "node_modules/.bin/gulp"
   },
-  "author": "CodesmithLLC https://github.com/CodesmithLLC <hello@codesmith.io>",
+  "author": "Brian Schmalz",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
